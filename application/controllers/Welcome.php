@@ -27,8 +27,8 @@ class Welcome extends CI_Controller {
 		date_default_timezone_set("ASIA/Jakarta"); 
 
 		// Token & API Telegram 
-		$aksesToken = '964788668:AAFBVS3xAG-GQriEWUHHWpkB16IFhm9xX8Q'; 
-		$userNameBot= "@testPembelajaranDB_bot";
+		$aksesToken = '1372386017:AAHXKr3UCE5ryzBQNdaaeeSqZu7k600YCy8'; 
+		$userNameBot= "@byTap_bot";
 		$this->api['connect'] = 'https://api.telegram.org/bot' . $aksesToken; 
 		$this->outputBot = json_decode(file_get_contents('php://input'), TRUE); 
 		 
@@ -58,7 +58,7 @@ class Welcome extends CI_Controller {
 
 		if (strpos($status['command'], "TAMBAH MENU PADA") !== FALSE) {
 			return 1;
-		}elseif (strpos($command, "IKUTI KUIS") !== FALSE || $command == 'A' || $command == 'B' || $command == 'C' || $command == 'D'){
+		}elseif (strpos($command, "IKUTI KUIS") !== FALSE || $command == 'A' || $command == 'B' || $command == 'C' || $command == 'D' || $command == 'E'){
 			$quiz = $this->Level_model->GetUserQuizStatus($id);
 			if ($quiz == 0) {
 				$this->Level_model->AddUserToQuiz($id);
@@ -74,24 +74,24 @@ class Welcome extends CI_Controller {
 	{
 		$progress = $this->Level_model->GetUserQuizProgress($ChatID);
 		if ($progress['status'] == 0) {
-			if ($message=='A' || $message == 'B' || $message == 'C' || $message == 'D') {
+			if ($message=='A' || $message == 'B' || $message == 'C' || $message == 'D' || $message == 'E' ) {
 				$this->Level_model->AddAnswer($ChatID, $message);
 				$question = $this->Level_model->GetQuestion($ChatID);
-				$this->sendMessage($ChatID, $question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'], $this->KeyboardAnswer(''));
+				$this->sendMessage($ChatID, $question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'].PHP_EOL.$question['answer_e'], $this->KeyboardAnswer(''));
 			}else{
 				$question = $this->Level_model->GetQuestion($ChatID);
-				$this->sendMessage($ChatID, 'SELAMAT MENGERJAKAN KUIS INI'.PHP_EOL.$question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'], $this->KeyboardAnswer(''));
+				$this->sendMessage($ChatID, 'SELAMAT MENGERJAKAN KUIS INI'.PHP_EOL.$question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'].PHP_EOL.$question['answer_e'], $this->KeyboardAnswer(''));
 			}
 			
 		}else{
-			if ($message=='A' || $message == 'B' || $message == 'C' || $message == 'D') {
+			if ($message=='A' || $message == 'B' || $message == 'C' || $message == 'D' || $message == 'E' ) {
 				$this->Level_model->AddAnswer($ChatID, $message);
 				$question = $this->Level_model->GetQuestion($ChatID);
 				if ($question==0) {
 					$score = $this->CountScore($ChatID);
 					$this->sendMessage($ChatID, 'Selamat Anda Telah Menyelesaikan Kuis Ini, Score anda adalah '.$score, $this->KeyboardCustom('KEMBALI KE START'));
 				}else{
-					$this->sendMessage($ChatID, $question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'], $this->KeyboardAnswer(''));
+					$this->sendMessage($ChatID, $question['question'].PHP_EOL.$question['answer_a'].PHP_EOL.$question['answer_b'].PHP_EOL.$question['answer_c'].PHP_EOL.$question['answer_d'].PHP_EOL.$question['answer_e'], $this->KeyboardAnswer(''));
 				}
 				
 			}else{
@@ -99,7 +99,7 @@ class Welcome extends CI_Controller {
 				$this->sendMessage($ChatID, 'Selamat Anda Telah Menyelesaikan Kuis Ini, Score anda adalah '.$score, $this->KeyboardCustom('KEMBALI KE START'));
 			}
 		}
-	}
+	} 
 
 	public function CountScore($id='')
 	{
@@ -113,6 +113,7 @@ class Welcome extends CI_Controller {
 				$poin++;
 			}
 		}
+		$this->Level_model->AddScoreToDB($id, ($poin/strlen($key)*100));
 		return ($poin/strlen($key)*100);
 	}
 
@@ -325,6 +326,10 @@ class Welcome extends CI_Controller {
 				$keyboardItem,
 				array("text" => "IKUTI KUIS ".$quizData['quiz_name'], "callback_data" => $item['id_quiz'])
 			);
+			array_push(
+				$keyboardItem,
+				array("text" => "KEMBALI KE START", "callback_data" => "kembali")
+			);
 		}
 		
 		$keyboard = array(
@@ -355,6 +360,10 @@ class Welcome extends CI_Controller {
 		array_push(
 			$keyboardItem,
 			array("text" => 'D', "callback_data" => $value)
+		);
+		array_push(
+			$keyboardItem,
+			array("text" => 'E', "callback_data" => $value)
 		);
 		$keyboard = array(
 			"keyboard" => array($keyboardItem),

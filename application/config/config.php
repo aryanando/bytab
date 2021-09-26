@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://api.pakaiweb.com/pembelajarandb/';
+$config['base_url'] = 'https://botaisya.paknando.com/';
 
 /*
 |--------------------------------------------------------------------------

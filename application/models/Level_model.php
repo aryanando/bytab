@@ -125,7 +125,7 @@ class Level_model extends CI_Model {
 	public function GetQuizAvailable($id='')
 	{
 		$user = $this->GetUserByTGID($id);
-		$this->db->where('id_class', $user['id_class']);
+		$this->db->where('id_class', 1);
 		$quiz = $this->db->get('quiz_class');
 		return $quiz->result_array();
 	}
@@ -196,6 +196,22 @@ class Level_model extends CI_Model {
 		return 1;
 	}
 
+	public function AddScoreToDB($id='', $score='')
+	{
+		$user = $this->GetUserByTGID($id);
+		$userQuizProgress = $this->GetUserQuizProgress($id);
+		$data2 = array(
+			'id_user' => $user['id'], 
+			'id_quiz' => 1,
+		);
+		$input = array(
+			'score' => $score,
+		);
+		$this->db->where($data2);
+		$this->db->update('score', $input);
+		return 1;
+	}
+
 	public function GetKey($id='')
 	{
 		$user = $this->GetUserByTGID($id);
@@ -216,6 +232,8 @@ class Level_model extends CI_Model {
 				$key = $key.'C';
 			}elseif ($question['answer_key']==4) {
 				$key = $key.'D';
+			}elseif ($question['answer_key']==5) {
+				$key = $key.'E';
 			}
 		}
 		return $key;
