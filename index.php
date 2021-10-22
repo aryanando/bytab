@@ -70,6 +70,7 @@ switch (ENVIRONMENT)
 		ini_set('display_errors', 1);
 	break;
 
+// This iss test
 	case 'testing':
 	case 'production':
 		ini_set('display_errors', 0);
